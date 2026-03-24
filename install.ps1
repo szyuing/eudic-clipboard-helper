@@ -6,7 +6,15 @@ function Write-Step {
 }
 
 function Test-Windows {
-    if (-not $IsWindows) {
+    $isWindows = $false
+
+    if (Get-Variable -Name IsWindows -ErrorAction SilentlyContinue) {
+        $isWindows = [bool]$IsWindows
+    } elseif ($env:OS -eq "Windows_NT") {
+        $isWindows = $true
+    }
+
+    if (-not $isWindows) {
         throw "This installer only supports Windows."
     }
 }
