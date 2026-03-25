@@ -1,6 +1,6 @@
 # 欧路词典剪贴板查词工具
 
-这是一个 Windows 小工具。启动后会监听剪贴板，当你复制单个英文单词时，自动调用欧路词典迷你查词窗口。
+这是一个 Windows 小工具。启动后会监听剪贴板，当你复制英文单词、常见英文词形或短语时，自动调用欧路词典迷你查词窗口。
 
 ## 一条命令安装
 
@@ -21,10 +21,17 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercont
 ## 功能
 
 - 监听系统剪贴板变化
-- 仅处理单个英文单词（`^[A-Za-z]{1,40}$`）
+- 处理英文单词、常见英文词形和英文短语
+- 支持 `apple`、`co-operate`、`don't`、`don’t`、`look up`
+- 会把 `hello,` 这类带尾部标点的文本清洗成 `hello` 后再查词
+- 不处理 `2026`、`你好`
 - 自动调用 `eudic://lp-dict/<word>`
-- 基础防抖（默认 500ms）与同词去重（默认 1500ms）
+- 基础防抖（默认 `500ms`）与同词去重（默认 `1500ms`）
 - 安装后自动开机自启动
+
+说明：
+- 最大长度提升为 `80` 个字符
+- 支持带空格短语，但仍不支持整句和通用自然语言文本
 
 ## 运行要求
 
@@ -49,12 +56,29 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercont
 1. 双击 `run.bat`
 2. 或用 AutoHotkey v2 运行 `EudicClipboardHelper.ahk`
 
+## 手动管理开机自启动
+
+如果你需要重新开启或关闭开机自启动，可以运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Set-Startup.ps1
+```
+
+关闭开机自启动：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Set-Startup.ps1 -Disable
+```
+
 ## 快速测试
 
 1. 安装完成后复制 `apple`
 2. 预期 1 秒内弹出欧路词典迷你查词
-3. 复制 `你好`，预期不触发
-4. 复制 `hello,`，预期不触发
+3. 复制 `co-operate`，预期正常触发
+4. 复制 `don’t`，预期正常触发
+5. 复制 `look up`，预期正常触发
+6. 复制 `hello,`，预期会按 `hello` 触发
+7. 复制 `你好`，预期不触发
 
 ## 常见问题
 
@@ -78,4 +102,5 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercont
 - `install.ps1`：一键安装脚本
 - `EudicClipboardHelper.ahk`：主脚本
 - `run.bat`：手动启动入口
+- `Set-Startup.ps1`：开机自启动开关脚本
 - `remand.md`：项目说明与宣传文案
